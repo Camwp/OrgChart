@@ -55,7 +55,8 @@ const height = 10000 - margin.top - margin.bottom;
       
     
     d3.select('svg')
-      .call(zoom);
+      .call(zoom)
+      .call(zoom.scaleBy, 0.5);
 
 
 
