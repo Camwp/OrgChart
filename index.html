@@ -99,7 +99,7 @@ const height = 10000 - margin.top - margin.bottom;
 }
 
 // Fetch JSON data containing organizational hierarchy
-fetch('organizational_data.json')
+fetch('https://raw.githubusercontent.com/Camwp/OrgChart/main/organizational_data.json')
   .then(response => response.json())
   .then(data => {
     // Transform the data into an array of nodes
