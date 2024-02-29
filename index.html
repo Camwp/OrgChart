@@ -52,11 +52,7 @@ const height = 10000 - margin.top - margin.bottom;
     
     let zoom = d3.zoom()
       .on('zoom', handleZoom)
-      .scaleExtent([0.1, 2]); // Adjust the zoom scale limits if needed
-
-    // Set initial zoom level to fully zoomed out
-    const initialTransform = d3.zoomIdentity.scale(0.1);
-    svg.call(zoom.transform, initialTransform);
+      .scaleExtent([0.1, 1]); // Adjust the zoom scale limits if needed
     
     d3.select('svg')
       .call(zoom);
