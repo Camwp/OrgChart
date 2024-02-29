@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organizational Chart</title>
+  <link rel="stylesheet" type="text/css" href="styles/style.css" />
+</head>
+
+<body>
+  <div id="chart-container"></div>
+
+  <!-- Load D3.js library -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// Function to create chart nodes
+function createChart(root) {
+    // Set dimensions and margins
+const margin = { top: 100, right: 100, bottom: 100, left: 100 };
+const width = 10000 - margin.left - margin.right;
+const height = 10000 - margin.top - margin.bottom;
+
+    
+
+    // Create SVG element
+    const svg = d3.select("#chart-container")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); // Translate the group element
+
+    
+
+    
+    // Create tree layout with top-down orientation
+    const tree = d3.tree()
+        .size([width, height])
+        //.separation((a, b) => (a.parent === b.parent ? 3.5 : 3) / a.depth);
+
+    // Assign positions to nodes
+    const treeData = tree(root);
+    treeData.each(d => {
+        d.x *= 4.5; // Increase the x position of each node to provide more space horizontally
+    });
+
+    function handleZoom(e) {
+      svg.transition().duration(50) // Adjust the duration of the transition as needed
+        .attr('transform', e.transform);
+    }
+
+    let zoom = d3.zoom()
+      .on('zoom', handleZoom)
+      .scaleExtent([0.5, 2]); // Adjust the zoom scale limits if needed
+
+    d3.select('svg')
+      .call(zoom);
+
+    
+
+
+
+
+    // Add links between nodes
+    svg.selectAll('.link')
+        .data(treeData.links())
+        .enter().append('path')
+        .attr('class', 'link')
+        .attr('d', d3.linkVertical()
+            .x(d => d.x)
+            .y(d => d.y));
+
+    
+    
+    // Add nodes
+    const nodes = svg.selectAll('.node')
+        .data(treeData.descendants())
+        .enter().append('g')
+        .attr('class', 'node')
+        .attr('transform', d => `translate(${d.x},${d.y})`);
+    // Add rectangles to represent nodes
+    nodes.append('rect')
+        .attr('x', -200) // Adjust the x position as needed
+        .attr('y', -0) // Adjust the y position as needed
+        .attr('width', 400) // Adjust the width as needed
+        .attr('height', 40) // Adjust the height as needed
+        .style('fill', '#fff')
+        .style('stroke', '#000000')
+        .style('stroke-width', '2px');
+    // Add text labels
+    nodes.append('text')
+        .attr('dy', '.3em')
+        .attr('y', d => (d.children ? 20 : 20))
+        .style('text-anchor', 'middle')
+        .text(d => d.data.displayName)
+        .style('fill', '#333')
+        .style('font-family', 'Arial, sans-serif')
+        .style('font-size', '32px');
+}
+
+// Fetch JSON data containing organizational hierarchy
+fetch('organizational_data.json')
+  .then(response => response.json())
+  .then(data => {
+    // Transform the data into an array of nodes
+    console.log(data); // Log the entire JSON data
+const nodes = Object.values(data).map(node => {
+  console.log(node); // Log each node
+  return {
+    id: node.displayName,
+    parentId: node.manager,
+    ...node
+  };
+});
+
+    // Create hierarchy from the transformed data
+    const root = d3.stratify()
+      .id(d => d.id)
+      .parentId(d => d.parentId)
+      (nodes);
+    // Print the root to the console
+    console.log(root);
+    // Create organizational chart based on JSON data
+    createChart(root);
+  })
+  .catch(error => console.error('Error loading data:', error));
+</script>
+</body>
+</html>
