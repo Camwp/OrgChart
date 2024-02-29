@@ -20,12 +20,11 @@ body {
 }
 
 svg {
-    
-    width: 100%;
+    margin: 0 auto; /* Center the SVG horizontally */
+    display: block; /* Ensures margin auto works */
     height: 99vh;
 }
 
 g {
     position: absolute;
-    left: -2500px;
 }
