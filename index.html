@@ -45,14 +45,19 @@ const height = 10000 - margin.top - margin.bottom;
     });
 
     function handleZoom(e) {
-      svg.transition().duration(50) // Adjust the duration of the transition as needed
-        .attr('transform', e.transform);
-    }
+      d3.select('svg g')
+      .attr('transform', e.transform);
+}
 
+    
     let zoom = d3.zoom()
       .on('zoom', handleZoom)
-      .scaleExtent([0.1, 1]); // Adjust the zoom scale limits if needed
+      .scaleExtent([0.1, 2]); // Adjust the zoom scale limits if needed
 
+    // Set initial zoom level to fully zoomed out
+    const initialTransform = d3.zoomIdentity.scale(0.1);
+    svg.call(zoom.transform, initialTransform);
+    
     d3.select('svg')
       .call(zoom);
 
