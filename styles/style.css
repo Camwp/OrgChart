@@ -28,3 +28,27 @@ svg {
 g {
     position: absolute;
 }
+
+.title {
+    display: none;
+}
+
+.title.active {
+    display: block;
+}
+
+#buttonHolder {
+    position: fixed;
+    display: flex;
+    left: 10px;
+    top: 10px;
+}
+button{
+    margin: 0 5px;
+    padding: 1em 0;
+    cursor: pointer;
+}
+button a {
+    padding: 2em;
+    text-decoration: none;
+}

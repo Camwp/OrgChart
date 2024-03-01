@@ -11,19 +11,11 @@
   <div id="chart-container"></div>
   <div id="buttonHolder">
     <button id="showTitles" onclick="showTitles()"><a>SHOW TITLES</a></button>
-    <button id="toggleRoles" onclick="toggleRoles()"><a>TOGGLE ROLES</a></button>
+    <button id="travel" style="top: 150"><a href="hei.html">GOTO ASSOCIATED TITLES</a></button>
   </div>
-  
   <!-- Load D3.js library -->
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
-
-let showActualTitles = false;
-
-function toggleRoles() {
-  showActualTitles = !showActualTitles;
-  updateChart();
-}
 
 function showTitles() {
   var titles = document.getElementsByClassName("title");
@@ -31,7 +23,6 @@ function showTitles() {
     titles[i].classList.toggle("active");
   }
 }
-
 // Function to create chart nodes
 function createChart(root) {
     // Set dimensions and margins
@@ -122,16 +113,10 @@ const height = 10000 - margin.top - margin.bottom;
         .attr('dy', '.3em')
         .attr('y', d => (d.children ? -40 : 60))
         .style('text-anchor', 'middle')
-        .text(d => showActualTitles ? d.data.role : d.data.title) // Show actual title if toggled
+        .text(d => d.data.title)
         .style('fill', '#333')
         .style('font-family', 'Arial, sans-serif')
         .style('font-size', '32px');
-}
-
-// Update chart function to update the roles based on the toggle
-function updateChart() {
-  d3.selectAll('.title')
-    .text(d => showActualTitles ? d.data.role : d.data.title);
 }
 
 // Fetch JSON data containing organizational hierarchy
@@ -142,19 +127,9 @@ fetch('https://raw.githubusercontent.com/Camwp/OrgChart/main/organizational_data
     console.log(data); // Log the entire JSON data
 const nodes = Object.values(data).map(node => {
   console.log(node); // Log each node
-
-  // Determine the role based on job title if it exists
-  let role = "Jr. Associate";
-  if (node.title && (node.title.includes("President") || node.title.includes("CEO"))) {
-    role = "CEO";
-  } else if (node.title && (node.title.includes("Manager") || node.title.includes("Director") || node.title.includes("Controller") || node.title.includes("Lead") || node.title.includes("Sr."))) {
-    role = "Sr. Associate";
-  }
-
   return {
     id: node.displayName,
     parentId: node.manager,
-    role: role,
     ...node
   };
 });
